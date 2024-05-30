@@ -1,29 +1,39 @@
+**Introduction**
+
+Welcome to this tutorial on creating a simple ERC-20 like token in Solidity! Today, we'll be writing a smart contract that implements basic functionalities like minting and burning tokens. Let's get started!
+
+**Setting Up the License and Solidity Version**
+
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.18;
 
-/*
-       REQUIREMENTS
-    1. Your contract will have public variables that store the details about your coin (Token Name, Token Abbrv., Total Supply)
-    2. Your contract will have a mapping of addresses to balances (address => uint)
-    3. You will have a mint function that takes two parameters: an address and a value. 
-       The function then increases the total supply by that number and increases the balance 
-       of the “sender” address by that amount
-    4. Your contract will have a burn function, which works the opposite of the mint function, as it will destroy tokens. 
-       It will take an address and value just like the mint functions. It will then deduct the value from the total supply 
-       and from the balance of the “sender”.
-    5. Lastly, your burn function should have conditionals to make sure the balance of "sender" is greater than or equal 
-       to the amount that is supposed to be burned.
-*/
+We start by specifying the license type, which in this case is MIT. This helps in declaring the licensing terms of the contract. Next, we set the Solidity compiler version to 0.8.18 to ensure compatibility and to leverage the features of this specific version.
+
+**Declaring the Contract and Public Variables**
 
 contract MyToken {
 
     // public variables here
     string public tokenName = "PLUS";
-    string public tokenAbbbrv = "ULTRA";
+    string public tokenAbbrv = "ULTRA";
     uint public totalSupply = 0;
+
+We declare our contract MyToken. Inside this contract, we define three public variables:
+
+tokenName - Stores the name of our token, "PLUS".
+tokenAbbrv - Stores the abbreviation of our token, "ULTRA".
+totalSupply - Tracks the total number of tokens in existence, initialized to zero.
+
+**Mapping for Balances**
+
 
     // mapping variable here
     mapping(address => uint) public balances;
+
+We use a mapping to associate each address with its token balance. This mapping, balances, links an address to a uint, representing the balance of that address.
+
+**Mint Function**
+
 
     // mint function
     function mint (address _address, uint _value) public {
@@ -31,10 +41,30 @@ contract MyToken {
         balances[_address] += _value;
     }
 
+The mint function allows the creation of new tokens. It takes two parameters: an address _address and a value _value. Here's what it does:
+
+Increases the totalSupply by _value.
+Increases the balance of _address by _value.
+This function effectively adds new tokens to the specified address.
+
+**Burn Function**
+
+
     // burn function
     function burn (address _address, uint _value) public {
-        if (balances[_address] >= _value) 
-            totalSupply -= _value;
-            balances[_address] -= _value;
+        require(balances[_address] >= _value, "Balance is not sufficient for burn");
+        totalSupply -= _value;
+        balances[_address] -= _value;
     }
 }
+
+The burn function destroys tokens, effectively reducing the total supply. It also takes two parameters: an address _address and a value _value. The steps it follows are:
+
+Checks if the balance of _address is at least _value using the require statement. If not, it reverts the transaction with an error message.
+Decreases the totalSupply by _value.
+Decreases the balance of _address by _value.
+This function ensures that tokens are only burned if the address has enough balance, maintaining the integrity of the token supply.
+
+**Conclusion**
+
+And that's it! We've successfully created a simple token contract with mint and burn functionalities. The mint function allows for the creation of new tokens, while the burn function ensures tokens can be destroyed, reducing the total supply. This contract provides a foundational understanding of how token contracts work in Solidity.
